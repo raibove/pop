@@ -7,6 +7,8 @@ const GameBoard = ({ board, onTileClick, hiddenTiles }: {
   onTileClick: (row: number, col: number) => void,
   hiddenTiles: Set<string>,
 }) => {
+
+  const tileColor = 'rgb(229, 231, 235)';
   // console.log(board);
   return (
     <div id="board" className="inline-block bg-gray-100 p-4 rounded-lg">
@@ -17,7 +19,7 @@ const GameBoard = ({ board, onTileClick, hiddenTiles }: {
              key={`${rowIndex}-${colIndex}`}
              hidden={hiddenTiles.has(`${rowIndex}-${colIndex}`)}
              duration={500}
-             color={color || "#ff0000"}
+             color={color || tileColor}
              type="triangle"
              direction="right"
              particlesAmountCoefficient={7}
@@ -27,12 +29,10 @@ const GameBoard = ({ board, onTileClick, hiddenTiles }: {
              onBtnClick={() => onTileClick(rowIndex, colIndex)}
            >
              <div
-              //  onClick={}
                style={{
-                 backgroundColor: color || 'transparent',
+                 backgroundColor: color || tileColor,
                  width: '40px',
                  height: '40px',
-                 margin: '2px',
                  cursor: 'pointer',
                  borderRadius: '4px'
                }}
