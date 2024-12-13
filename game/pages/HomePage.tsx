@@ -1,7 +1,5 @@
-import { ComponentProps, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSetPage } from '../hooks/usePage';
-import { cn, rand } from '../utils';
-import ParticleEffectButton from '../components/ParticleEffect';
 import { getRandomColor } from '../utils/colors';
 import { checkMatch } from '../utils/gameLogic';
 import { Board } from '../types';
@@ -12,9 +10,9 @@ const BOARD_SIZE = 12;
 
 export const HomePage = ({ postId }: { postId: string }) => {
   const setPage = useSetPage();
-  const [hidden, setHidden] = useState(false);
   const [board, setBoard] = useState<Board>([]);
   const [score, setScore] = useState(0);
+  const [hiddenTiles, setHiddenTiles] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     initializeBoard();
@@ -40,15 +38,15 @@ export const HomePage = ({ postId }: { postId: string }) => {
   };
 
   const handleTileClick = (row: number, col:  number) => {
-    if (board[row][col]) return;
-
-    const matchResult = checkMatch(board, row, col);
+    const matchResult = checkMatch(board, row, col, hiddenTiles);
+    console.log('<< row, col', row, col, matchResult)
     
     if (matchResult.matched) {
       const newBoard = [...board];
       // Remove all matching tiles
       matchResult.positions!.forEach(([r, c]) => {
-        newBoard[r][c] = null;
+        // newBoard[r][c] = null;
+        setHiddenTiles(prev => new Set([...prev, `${r}-${c}`]));
       });
       setBoard(newBoard);
       setScore(score + matchResult.score!);
@@ -59,36 +57,8 @@ export const HomePage = ({ postId }: { postId: string }) => {
     <div className="relative flex h-full w-full flex-col items-center justify-center bg-gray-200">
       <div className=" flex flex-col items-center justify-center">
       <Score score={score} />
-      <GameBoard board={board} onTileClick={handleTileClick} />
+      <GameBoard board={board} onTileClick={handleTileClick} hiddenTiles={hiddenTiles}/>
     </div>
-      <ParticleEffectButton
-        // className="relative z-20 mt-4"
-        hidden={hidden}
-        duration={500}
-        color="#ff0000"
-        type="triangle"
-        direction="right"
-        particlesAmountCoefficient={7}
-        oscillationCoefficient={20}
-        size={() => Math.random() * 2 + 1} // Smaller particles
-        speed={() => rand(-2, 2)} // Adjusted speed
-        // onComplete={() => setHidden(false)}
-      >
-       <div
-          onClick={() => setHidden(true)}
-          style={{
-            padding: "1px",
-            backgroundColor: "#ff0000",
-            color: "white",
-            border: "none",
-            borderRadius: "50%",
-            height: "20px",
-            width: "20px",
-            cursor: "pointer",
-            position: 'relative'
-          }}
-        ></div>
-      </ParticleEffectButton>
     </div>
   );
 };

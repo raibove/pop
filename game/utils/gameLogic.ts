@@ -1,7 +1,7 @@
 import { Board, ColorGroup, MatchResult, Position } from "../types";
 
-export const checkMatch = (board: Board, row: number, col: number): MatchResult => {
-  if (board[row][col]) return { matched: false };
+export const checkMatch = (board: Board, row: number, col: number, hiddenTiles: Set<string>): MatchResult => {
+  if (board[row][col] && !hiddenTiles.has(`${row}-${col}`)) return { matched: false };
 
   const directions: Position[] = [
     [-1, 0],
@@ -23,7 +23,8 @@ export const checkMatch = (board: Board, row: number, col: number): MatchResult 
       newCol >= 0 &&
       newCol < board[0].length
     ) {
-      if (board[newRow][newCol]) {
+      if (board[newRow][newCol] && !hiddenTiles.has(`${newRow}-${newCol}`)) {
+        console.log('<<', newRow, newCol)
         nearestTiles.push(board[newRow][newCol]!);
         tilePositions.push([newRow, newCol]);
         break;
@@ -32,7 +33,7 @@ export const checkMatch = (board: Board, row: number, col: number): MatchResult 
       newCol += dy;
     }
   }
-
+  console.log('<< nearestTiles',nearestTiles, tilePositions);
   if (nearestTiles.length < 2) return { matched: false };
 
   // Group tiles by color

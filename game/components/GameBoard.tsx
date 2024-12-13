@@ -1,14 +1,13 @@
 import { Board } from '../types';
 import { rand } from '../utils';
 import ParticleEffectButton from './ParticleEffect';
-import Tile from './Tile';
 
-const GameBoard = ({ board, onTileClick }: {
+const GameBoard = ({ board, onTileClick, hiddenTiles }: {
   board: Board,
-  onTileClick: (row: number, col: number) => void
+  onTileClick: (row: number, col: number) => void,
+  hiddenTiles: Set<string>,
 }) => {
-  console.log(board);
-  const hiddenTiles = new Set<string>();
+  // console.log(board);
   return (
     <div id="board" className="inline-block bg-gray-100 p-4 rounded-lg">
       {board.map((row: (string | null)[], rowIndex: number) => (
@@ -25,9 +24,10 @@ const GameBoard = ({ board, onTileClick }: {
              oscillationCoefficient={20}
              size={() => Math.random() * 2 + 1}
              speed={() => rand(-2, 2)}
+             onBtnClick={() => onTileClick(rowIndex, colIndex)}
            >
              <div
-               onClick={() => onTileClick(rowIndex, colIndex)}
+              //  onClick={}
                style={{
                  backgroundColor: color || 'transparent',
                  width: '40px',

@@ -32,6 +32,7 @@ interface ParticleEffectButtonProps {
   oscillationCoefficient: number;
   onBegin?: () => void;
   onComplete?: () => void;
+  onBtnClick: ()=> void;
 }
 
 interface ParticleEffectButtonState {
@@ -70,6 +71,7 @@ class ParticleEffectButton extends Component<ParticleEffectButtonProps, Particle
     oscillationCoefficient: 20,
     onBegin: noop,
     onComplete: noop,
+    onBtnClick: noop,
   };
 
   private _canvas: HTMLCanvasElement | null = null;
@@ -331,7 +333,7 @@ class ParticleEffectButton extends Component<ParticleEffectButtonProps, Particle
   }
 
   render() {
-    const { children, className, direction } = this.props;
+    const { children, className, direction, onBtnClick } = this.props;
     const { status, progress } = this.state;
 
     const containerStyles: React.CSSProperties = {
@@ -373,7 +375,7 @@ class ParticleEffectButton extends Component<ParticleEffectButtonProps, Particle
     }
 
     return (
-      <div className={"particle-btn"} style={containerStyles}>
+      <div className="particle-btn" style={containerStyles} onClick={onBtnClick}>
         <div
           className="wrapper"
           style={wrapperStyles}
