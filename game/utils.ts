@@ -9,3 +9,11 @@ export function cn(...inputs: ClassValue[]) {
 export function sendToDevvit(event: WebviewToBlockMessage) {
   window.parent?.postMessage(event, "*");
 }
+
+export function rand(min: number, max: number | undefined) {
+  if (max === undefined) {
+    max = min;
+    min = 0;
+  }
+  return Math.random() * (max - min) + min;
+}

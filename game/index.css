@@ -5,3 +5,31 @@
 body {
   height: 512px;
 }
+
+
+.particle-btn {
+  position: relative;
+  display: inline-block;
+  padding: 0;
+  border: 0;
+  margin: 0;
+  cursor: pointer;
+  background: transparent;
+}
+
+.particle-btn .wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.particle-btn .content {
+  position: relative;
+}
+
+.particle-btn canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}

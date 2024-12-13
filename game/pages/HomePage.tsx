@@ -1,9 +1,12 @@
-import { ComponentProps } from 'react';
+import { ComponentProps, useState } from 'react';
 import { useSetPage } from '../hooks/usePage';
-import { cn } from '../utils';
+import { cn, rand } from '../utils';
+import ParticleEffectButton from '../components/particleEffect';
 
 export const HomePage = ({ postId }: { postId: string }) => {
   const setPage = useSetPage();
+  const [hidden, setHidden] = useState(false);
+
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-slate-900">
@@ -15,13 +18,41 @@ export const HomePage = ({ postId }: { postId: string }) => {
       </p>
       <img src="/assets/default-snoovatar.png" alt="default snoovatar picture" />
       <p className="relative z-20 mb-4 mt-2 text-center text-neutral-300">PostId: {postId}</p>
-      <MagicButton
+      {/* <MagicButton
         onClick={() => {
           setPage('pokemon');
         }}
       >
         Show me more
-      </MagicButton>
+      </MagicButton> */}
+      <ParticleEffectButton
+        // className="relative z-20 mt-4"
+        hidden={hidden}
+        duration={500}
+        color="#ff0000"
+        type="triangle"
+        direction="right"
+        particlesAmountCoefficient={7}
+        oscillationCoefficient={20}
+        size={() => Math.random() * 2 + 1} // Smaller particles
+        speed={() => rand(-2, 2)} // Adjusted speed
+        // onComplete={() => setHidden(false)}
+      >
+       <div
+          onClick={() => setHidden(true)}
+          style={{
+            padding: "1px",
+            backgroundColor: "#ff0000",
+            color: "white",
+            border: "none",
+            borderRadius: "50%",
+            height: "20px",
+            width: "20px",
+            cursor: "pointer",
+            position: 'relative'
+          }}
+        ></div>
+      </ParticleEffectButton>
     </div>
   );
 };
