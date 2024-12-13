@@ -31,5 +31,5 @@ export const App = () => {
     }
   }, [initData, setPostId]);
 
-  return <div className="h-full">{getPage(page, { postId })}</div>;
+  return <div className="h-screen overflow-hidden ">{getPage(page, { postId })}</div>;
 };
