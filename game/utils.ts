@@ -1,6 +1,7 @@
 import { WebviewToBlockMessage } from "./shared";
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { getRandomColor } from "./utils/colors";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

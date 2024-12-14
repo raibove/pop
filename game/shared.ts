@@ -1,16 +1,16 @@
 export type Page =
   | "home"
-  | "pokemon";
+  | "loading";
 
-export type WebviewToBlockMessage = { type: "INIT" } | {
-  type: "GET_POKEMON_REQUEST";
-  payload: { name: string };
-};
+export type WebviewToBlockMessage = { type: "INIT" };
 
 export type BlocksToWebviewMessage = {
   type: "INIT_RESPONSE";
   payload: {
     postId: string;
+    board: string;
+    username: string;
+    avatar: string;
   };
 } | {
   type: "GET_POKEMON_RESPONSE";
@@ -21,3 +21,8 @@ export type DevvitMessage = {
   type: "devvit-message";
   data: { message: BlocksToWebviewMessage };
 };
+
+export interface ChallengeInfo {
+  board: string,
+  totalPlayers: number,
+}

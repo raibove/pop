@@ -40,3 +40,9 @@ There is one last gotcha! You need to make a new post before you can see it. You
 - `npm run dev`: Starts a development server where you can develop your application live on Reddit.
 - `npm run upload`: Uploads a new version of your app
 - `npm run vite`: Useful to run just the React app on your machine if you need to style things quickly.
+
+- TODO
+-> store initial board state.
+-> store user attempts, score, time submitted.
+-> add logic when no more match available.
+-> timeout game in x seconds.

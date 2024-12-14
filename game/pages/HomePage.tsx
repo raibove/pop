@@ -1,41 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useSetPage } from '../hooks/usePage';
-import { getRandomColor } from '../utils/colors';
 import { checkMatch } from '../utils/gameLogic';
 import { Board } from '../types';
 import GameBoard from '../components/GameBoard';
 import Score from '../components/Score';
 
-const BOARD_SIZE = 12;
-
-export const HomePage = ({ postId }: { postId: string }) => {
+export const HomePage = ({ postId, initialBoard }: { postId: string, initialBoard: Board }) => {
   const setPage = useSetPage();
   const [board, setBoard] = useState<Board>([]);
   const [score, setScore] = useState(0);
   const [hiddenTiles, setHiddenTiles] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    initializeBoard();
-  }, []);
-
-  const initializeBoard = () => {
-    const newBoard = Array(BOARD_SIZE)
-      .fill(null)
-      .map(() => Array(BOARD_SIZE).fill(null));
-
-    // Fill ~40% of the board with random colors
-    for (let i = 0; i < BOARD_SIZE * BOARD_SIZE * 0.4; i++) {
-      let row, col;
-      do {
-        row = Math.floor(Math.random() * BOARD_SIZE);
-        col = Math.floor(Math.random() * BOARD_SIZE);
-      } while (newBoard[row][col] !== null);
-
-      newBoard[row][col] = getRandomColor();
-    }
-
-    setBoard(newBoard);
-  };
+    setBoard(initialBoard);
+  }, [board]);
 
   const handleTileClick = (row: number, col:  number) => {
     const matchResult = checkMatch(board, row, col, hiddenTiles);
