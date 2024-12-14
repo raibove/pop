@@ -33,6 +33,7 @@ interface ParticleEffectButtonProps {
   onBegin?: () => void;
   onComplete?: () => void;
   onBtnClick: ()=> void;
+  boxWidth: number;
 }
 
 interface ParticleEffectButtonState {
@@ -72,6 +73,7 @@ class ParticleEffectButton extends Component<ParticleEffectButtonProps, Particle
     onBegin: noop,
     onComplete: noop,
     onBtnClick: noop,
+    boxWidth: 0,
   };
 
   private _canvas: HTMLCanvasElement | null = null;
@@ -226,6 +228,7 @@ class ParticleEffectButton extends Component<ParticleEffectButtonProps, Particle
       death: status === "hiding" ? frames - 20 + Math.random() * 40 : frames,
       speed: _speed,
       size: _size,
+
     });
   }
 
@@ -333,12 +336,14 @@ class ParticleEffectButton extends Component<ParticleEffectButtonProps, Particle
   }
 
   render() {
-    const { children, className, direction, onBtnClick } = this.props;
+    const { children, direction, onBtnClick } = this.props;
     const { status, progress } = this.state;
 
     const containerStyles: React.CSSProperties = {
       position: "relative",
       display: "inline-block",
+      width: this.props.boxWidth,
+      height: this.props.boxWidth,
     };
 
     const wrapperStyles: React.CSSProperties = {

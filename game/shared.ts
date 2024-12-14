@@ -11,6 +11,7 @@ export type BlocksToWebviewMessage = {
     board: string;
     username: string;
     avatar: string;
+    appWidth?: number;
   };
 } | {
   type: "GET_POKEMON_RESPONSE";

@@ -7,11 +7,12 @@ import { sendToDevvit } from './utils';
 import { useDevvitListener } from './hooks/useDevvitListener';
 import { Board } from './types';
 import {createNewBoard} from '../src/utils/utils'
+import { EASY_BOARD_SIZE, HARD_BOARD_SIZE } from '../src/constants';
 
-const getPage = (page: Page, { postId, board }: { postId: string, board: Board }) => {
+const getPage = (page: Page, { postId, board, tileWidth }: { postId: string, board: Board, tileWidth: number }) => {
   switch (page) {
     case 'home':
-      return <HomePage postId={postId} initialBoard={board} />;
+      return <HomePage postId={postId} initialBoard={board} tileWidth={tileWidth}/>;
     case 'loading':
       return <PokemonPage />;
     default:
@@ -22,24 +23,28 @@ const getPage = (page: Page, { postId, board }: { postId: string, board: Board }
 export const App = () => {
   const [postId, setPostId] = useState('');
   const [board,setBoard] = useState<Board>([]);
+  const [tileWidth, setTileWidth] = useState(40);
+
   const page = usePage();
   const setPage = useSetPage();
   const initData = useDevvitListener('INIT_RESPONSE');
   useEffect(() => {
-    setBoard(createNewBoard());
+    // setBoard(createNewBoard(HARD_BOARD_SIZE));
     sendToDevvit({ type: 'INIT' });
   }, []);
 
   useEffect(() => {
     if (initData) {
-      console.log('<< initData', initData);
       const brd = JSON.parse(initData.board);
-      console.log('<< brd', brd);
       setBoard(brd);
       setPostId(initData.postId);
       setPage('home')
+      if(initData.appWidth){
+        console.log(initData.appWidth);
+        setTileWidth(((initData.appWidth - 20)/brd.length) - 4);
+      }
     }
   }, [initData, setPostId]);
 
-  return <div className="h-screen overflow-hidden ">{getPage(page, { postId, board })}</div>;
+  return <div className="h-screen overflow-hidden ">{getPage(page, { postId, board, tileWidth })}</div>;
 };

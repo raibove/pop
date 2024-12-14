@@ -14,60 +14,10 @@ const directions: Position[] = [
   [0, 1],
 ]; // up, down, left, right
 
-const MIN_GAP_BETWEEN_MATCHING_TILE = 1;
 export const checkIfMoreMatchAvailable = (board: Board, hiddenTiles: Set<string>): boolean => {
   for (let row = 0; row < board.length; row++) {
     for (let col = 0; col < board[0].length; col++) {
-      // if user click on tile return
-      if (board[row][col] && !hiddenTiles.has(`${row}-${col}`)) {
-        let newRow = row - 1 - MIN_GAP_BETWEEN_MATCHING_TILE;
-        let newCol = col;
-        while (newRow > 0) {
-          if (board[newRow][newCol] && !hiddenTiles.has(`${newRow}-${newCol}`)) {
-            if (board[row][col] === board[newRow][newCol]) {
-              return true;
-            }
-            break;
-          }
-          newRow--;
-        }
-
-        newRow = row + 1 + MIN_GAP_BETWEEN_MATCHING_TILE;
-        newCol = col;
-        while (newRow < board.length) {
-          if (board[newRow][newCol] && !hiddenTiles.has(`${newRow}-${newCol}`)) {
-            if (board[row][col] === board[newRow][newCol]) {
-              return true;
-            }
-            break;
-          }
-          newRow++;
-        }
-
-        newRow = row;
-        newCol = col - 1 - MIN_GAP_BETWEEN_MATCHING_TILE;
-        while (newCol > 0) {
-          if (board[newRow][newCol] && !hiddenTiles.has(`${newRow}-${newCol}`)) {
-            if (board[row][col] === board[newRow][newCol]) {
-              return true;
-            }
-            break;
-          }
-          newCol--;
-        }
-
-        newRow = row;
-        newCol = col + 1 + MIN_GAP_BETWEEN_MATCHING_TILE;
-        while (newCol < board[0].length) {
-          if (board[newRow][newCol] && !hiddenTiles.has(`${newRow}-${newCol}`)) {
-            if (board[row][col] === board[newRow][newCol]) {
-              return true;
-            }
-            break;
-          }
-          newCol++;
-        }
-      }
+      if(checkMatch(board, row, col, hiddenTiles).matched) return true;
     }
   }
   return false;

@@ -32,7 +32,7 @@ Devvit.addCustomPostType({
       const [user, challenge] = await Promise.all([
         context.reddit.getCurrentUser(),
         ChallengeToPost.getChallengeNumberForPost({
-          redis: context.redis,
+          context: context,
           postId: context.postId!,
         }),
       ]);
@@ -73,6 +73,7 @@ Devvit.addCustomPostType({
                     redis: context.redis,
                     challenge: initialState.challenge,
                   });
+                  
                   sendMessageToWebview(context, {
                     type: 'INIT_RESPONSE',
                     payload: {
@@ -80,6 +81,7 @@ Devvit.addCustomPostType({
                       board: challenge.board,
                       username: initialState.user!.username!,
                       avatar: initialState.user!.avatar??'',
+                      appWidth:Math.min((context.dimensions?.height ?? 300) - 50, context.dimensions?.width ?? 300),
                     },
                   });
                   break;

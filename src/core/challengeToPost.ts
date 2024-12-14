@@ -1,4 +1,5 @@
-import { RedisType } from "./challenge.js";
+import { Devvit } from "@devvit/public-api";
+import { Challenge, RedisType } from "./challenge.js";
 
 export * as ChallengeToPost from "./challengeToPost.js";
 
@@ -6,16 +7,24 @@ export * as ChallengeToPost from "./challengeToPost.js";
 export const getChallengeToOriginalPostKey = () =>
   `challenge_to_original_post` as const;
 
-export const getChallengeNumberForPost =  async ({ redis, postId }: {redis: RedisType, postId: string}) => {
-    const challengeNumber = await redis.zScore(
+export const getChallengeNumberForPost =  async ({ context, postId }: {context: Devvit.Context, postId: string}) => {
+    let challengeNumber = await context.redis.zScore(
       getChallengeToOriginalPostKey(),
       postId,
     );
 
     if (!challengeNumber) {
-      throw new Error(
-        "No challenge number found for post. Did you mean to create one?",
-      );
+      try{
+        await Challenge.makeNewChallenge({context, postId})
+        challengeNumber = await context.redis.zScore(
+          getChallengeToOriginalPostKey(),
+          postId,
+        );
+      } catch(err){
+        throw new Error(
+          "No challenge number found for post. Did you mean to create one?",
+        );
+      }
     }
     return challengeNumber;
   }

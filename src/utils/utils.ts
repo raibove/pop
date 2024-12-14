@@ -11,19 +11,17 @@ export const sendMessageToWebview = (
   context.ui.webView.postMessage(WEBVIEW_ID, message);
 };
 
-export const BOARD_SIZE = 12;
-
-export const createNewBoard = () => {
-  const newBoard = Array(BOARD_SIZE)
+export const createNewBoard = (boardSize: number) => {
+  const newBoard = Array(boardSize)
     .fill(null)
-    .map(() => Array(BOARD_SIZE).fill(null));
+    .map(() => Array(boardSize).fill(null));
 
   // Fill ~40% of the board with random colors
-  for (let i = 0; i < BOARD_SIZE * BOARD_SIZE * 0.4; i++) {
+  for (let i = 0; i < boardSize * boardSize * 0.4; i++) {
     let row, col;
     do {
-      row = Math.floor(Math.random() * BOARD_SIZE);
-      col = Math.floor(Math.random() * BOARD_SIZE);
+      row = Math.floor(Math.random() * boardSize);
+      col = Math.floor(Math.random() * boardSize);
     } while (newBoard[row][col] !== null);
 
     newBoard[row][col] = getRandomColor();
