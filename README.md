@@ -45,4 +45,10 @@ There is one last gotcha! You need to make a new post before you can see it. You
 -> store initial board state.
 -> store user attempts, score, time submitted.
 -> add logic when no more match available.
--> timeout game in x seconds.
+-> timeout game in x seconds....
+
+Board data store
+-> row
+-> column
+-> color[r][c]
+-> [][]string|null

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { sendToDevvit } from './utils';
 import { useDevvitListener } from './hooks/useDevvitListener';
 import { Board } from './types';
+import {createNewBoard} from '../src/utils/utils'
 
 const getPage = (page: Page, { postId, board }: { postId: string, board: Board }) => {
   switch (page) {
@@ -25,6 +26,7 @@ export const App = () => {
   const setPage = useSetPage();
   const initData = useDevvitListener('INIT_RESPONSE');
   useEffect(() => {
+    setBoard(createNewBoard());
     sendToDevvit({ type: 'INIT' });
   }, []);
 
