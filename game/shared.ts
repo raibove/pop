@@ -2,7 +2,14 @@ export type Page =
   | "home"
   | "loading";
 
-export type WebviewToBlockMessage = { type: "INIT" };
+export type WebviewToBlockMessage = { type: "INIT" } |
+{type: "UPDATE_SCORE",
+  payload: {
+    score: number,
+    hiddenTiles: string,
+    isGameOver: boolean 
+  }
+};
 
 export type BlocksToWebviewMessage = {
   type: "INIT_RESPONSE";
@@ -12,10 +19,9 @@ export type BlocksToWebviewMessage = {
     username: string;
     avatar: string;
     appWidth?: number;
+    hiddenTiles: string;
+    score: number;
   };
-} | {
-  type: "GET_POKEMON_RESPONSE";
-  payload: { number: number; name: string; error?: string };
 };
 
 export type DevvitMessage = {

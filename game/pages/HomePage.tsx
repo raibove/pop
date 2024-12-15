@@ -4,10 +4,12 @@ import { checkIfMoreMatchAvailable, checkMatch } from '../utils/gameLogic';
 import { Board } from '../types';
 import GameBoard from '../components/GameBoard';
 import Score from '../components/Score';
+import { sendToDevvit } from '../utils';
+import { set } from 'animejs';
 
 // const MAX_ALLOWED_TIME = 
 
-export const HomePage = ({ postId, initialBoard, tileWidth }: { postId: string, initialBoard: Board, tileWidth: number }) => {
+export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, initialScore }: { postId: string, initialBoard: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number }) => {
   const setPage = useSetPage();
   const [board, setBoard] = useState<Board>([]);
   const [score, setScore] = useState(0);
@@ -18,8 +20,10 @@ export const HomePage = ({ postId, initialBoard, tileWidth }: { postId: string, 
 
   useEffect(() => {
     setBoard(initialBoard);
-    console.log('<<initial', initialBoard)
-  }, [board]);
+    const formattedHiddenTiles = new Set(initialHiddenTiles.split(', ').filter(tile => tile !== ''));
+    setHiddenTiles(formattedHiddenTiles);
+    setScore(initialScore);
+  }, [initialBoard]);
 
   const handleTileClick = (row: number, col: number) => {
     setNumberOfClicks(prevNumberClick=> prevNumberClick+1);
@@ -29,9 +33,18 @@ export const HomePage = ({ postId, initialBoard, tileWidth }: { postId: string, 
       matchResult.positions!.forEach(([r, c]) => {
         newHiddenTiles.add(`${r}-${c}`);
       });
-      setMoreMatchAvailable(checkIfMoreMatchAvailable(board, newHiddenTiles))
+      const isMoreMatchAvailable = checkIfMoreMatchAvailable(board, newHiddenTiles);
+      setMoreMatchAvailable(isMoreMatchAvailable)
       setHiddenTiles(newHiddenTiles);
       setScore(score + matchResult.score!);
+      sendToDevvit({
+        type: 'UPDATE_SCORE',
+        payload: {
+          score: score + matchResult.score!,
+          hiddenTiles: Array.from(newHiddenTiles).join(','),
+          isGameOver: !isMoreMatchAvailable
+        }
+    })
     }
   };
 

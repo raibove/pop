@@ -37,3 +37,11 @@ export const stringifyValues = <T extends Record<string, any>>(
     Object.entries(obj).map(([key, value]) => [key, String(value)]),
   ) as Record<keyof T, string>;
 };
+
+
+export const isServerCall = (e: unknown) => {
+  if (e instanceof Error && e.message === "ServerCallRequired") {
+    // console.log(`Throwing circuit breaker!`);
+    throw e;
+  }
+};
