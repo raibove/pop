@@ -12,6 +12,7 @@ import { Challenge } from './core/challenge.js';
 import { ChallengeLeaderboard } from './core/leaderboard.js';
 import { ChallengeToAttemptNumber } from './core/ChallengeToAttemptNumber.js';
 
+const GAME_BOARD_HEADER_HEIGHT = 80;
 Devvit.configure({
   redditAPI: true,
   http: true,
@@ -134,7 +135,7 @@ Devvit.addCustomPostType({
                       board: challenge.board,
                       username: initialState.user!.username!,
                       avatar: initialState.user!.avatar ?? '',
-                      appWidth: Math.min((context.dimensions?.height ?? 300) - 50, context.dimensions?.width ?? 300),
+                      appWidth: Math.min((context.dimensions?.height ?? 300) - GAME_BOARD_HEADER_HEIGHT, context.dimensions?.width ?? 300),
                       hiddenTiles: gameState && gameState.initialHiddenTiles ? gameState.initialHiddenTiles : '',
                       score: gameState && gameState.score ? gameState.score : 0,
                       isGameOver: gameState && gameState.isGameOver ? gameState.isGameOver : false,

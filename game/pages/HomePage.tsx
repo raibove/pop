@@ -3,10 +3,10 @@ import { useSetPage } from '../hooks/usePage';
 import { checkIfMoreMatchAvailable, checkMatch } from '../utils/gameLogic';
 import { Board } from '../types';
 import GameBoard from '../components/GameBoard';
-import Score from '../components/Score';
 import { sendToDevvit } from '../utils';
 import { GameOver } from '../components/GameOver';
-// const MAX_ALLOWED_TIME = 
+import { ChartColumnDecreasing, Music } from 'lucide-react'
+import { motion } from 'motion/react';
 
 export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, initialScore, attemptNumber }:
   { postId: string, initialBoard: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number, attemptNumber: null | number }) => {
@@ -14,6 +14,7 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
   const [board, setBoard] = useState<Board>([]);
   const [score, setScore] = useState(0);
   const [numberOfClicks, setNumberOfClicks] = useState(0);
+  const [isSoundOn, setIsSoundOn] = useState(true);
 
   const [moreMatchAvailable, setMoreMatchAvailable] = useState(true);
   const [hiddenTiles, setHiddenTiles] = useState<Set<string>>(new Set());
@@ -55,9 +56,49 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center bg-gray-200">
-      <div className=" flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
         {!moreMatchAvailable && <GameOver score={score} onCheckLeadboard={() => setPage('leaderboard')} />}
-        <Score score={score} />
+        <div className="flex items-center gap-4 justify-between w-1/2 mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xl text-gray-800 bg-white/50 px-3 py-1 rounded-full shadow-sm">
+              Score: {score}
+            </span>
+          </div>
+          <div className='flex items-center gap-2'>
+            <div className="flex items-center space-x-2">
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all 
+            border border-slate-300 hover:border-indigo-400 
+            shadow-sm hover:shadow-md group cursor-pointer"
+                onClick={() => setPage('leaderboard')}
+              >
+                <ChartColumnDecreasing
+                  className="text-yellow-500 group-hover:text-yellow-600 transition-colors"
+                  size={24}
+                />
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className={`p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all 
+            border border-slate-300 hover:border-indigo-400 
+            shadow-sm hover:shadow-md group cursor-pointer
+            ${isSoundOn
+                    ? 'text-blue-500 hover:text-blue-600'
+                    : 'text-gray-400 hover:text-gray-500'}`}
+                onClick={() => setIsSoundOn(!isSoundOn)}
+              >
+                <Music
+                  className="transition-colors"
+                  size={24}
+                />
+              </motion.div>
+            </div>
+          </div>
+        </div>
         <GameBoard board={board} onTileClick={handleTileClick} hiddenTiles={hiddenTiles} tileWidth={tileWidth} />
       </div>
     </div>
