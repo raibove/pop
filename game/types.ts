@@ -9,3 +9,12 @@ export type MatchResult = {
   positions?: Position[];
   score?: number;
 };
+
+export interface LeaderboardPlayer {
+  // id: string;
+  username: string;
+  // avatar: string;
+  score: number;
+  // level: number;
+  // bestStreak: number;
+}

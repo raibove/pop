@@ -50,6 +50,36 @@ export const getLeaderboardByScore = async ({ redis, challenge, sort, start, sto
     return result;
 }
 
+// Function to get the leaderboard with the highest score for each user
+export const getLeaderboardWithMaxScores = async (redis: RedisType, challenge: number, sort: "ASC"|"DESC", start:number, stop:number) => {
+     const leaderboard = await getLeaderboardByScore({redis, challenge, sort, start, stop});
+
+    const highestScores: Map<string, { score: number; attemptNumber: number, username:string }> = new Map();
+
+    // Iterate through each leaderboard entry and keep only the highest score for each user
+    leaderboard.forEach((entry) => {
+        const member = entry.member, 
+        score = entry.score;
+        const [username, attemptNumberStr] = member.split(":");
+        const attemptNumber = parseInt(attemptNumberStr);
+
+        // If the username doesn't exist in the map, or if the current score is higher than the previous one
+        if (!highestScores.has(username) || highestScores.get(username)!.score < score) {
+            highestScores.set(username, { score, attemptNumber, username });
+        }
+    });
+
+    // Convert the result into an array of top scores for each user
+    const leaderboardWithMaxScores = Array.from(highestScores.values())
+        .map((entry) => ({
+            score: entry.score,
+            member: entry.username
+        }));
+
+    return leaderboardWithMaxScores;
+};
+
+
 export const getGameState = async ({ redis, challenge, username, attemptNumber }: {
     redis: RedisType,
     challenge: number,

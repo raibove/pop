@@ -7,6 +7,9 @@ import { sendToDevvit } from '../utils';
 import { GameOver } from '../components/GameOver';
 import { ChartColumnDecreasing, Music } from 'lucide-react'
 import { motion } from 'motion/react';
+import useSound from 'use-sound';
+import PopSound from './pop_sound.flac';
+import { i } from 'motion/react-client';
 
 export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, initialScore, attemptNumber }:
   { postId: string, initialBoard: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number, attemptNumber: null | number }) => {
@@ -16,8 +19,21 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
   const [numberOfClicks, setNumberOfClicks] = useState(0);
   const [isSoundOn, setIsSoundOn] = useState(true);
 
+  const [playbackRate, setPlaybackRate] = useState(0.75);
+
   const [moreMatchAvailable, setMoreMatchAvailable] = useState(true);
   const [hiddenTiles, setHiddenTiles] = useState<Set<string>>(new Set());
+  const [play] = useSound(PopSound, {
+    playbackRate,
+    volume: 0.5,
+  });
+
+  const handleClick = () => {
+    if (!isSoundOn) return;
+    setPlaybackRate(playbackRate + 0.1);
+    play();
+  };
+
 
   useEffect(() => {
     setBoard(initialBoard);
@@ -30,6 +46,7 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
     setNumberOfClicks(prevNumberClick => prevNumberClick + 1);
     const matchResult = checkMatch(board, row, col, hiddenTiles);
     if (matchResult.matched) {
+      handleClick();
       const newHiddenTiles = new Set(hiddenTiles);
       matchResult.positions!.forEach(([r, c]) => {
         newHiddenTiles.add(`${r}-${c}`);

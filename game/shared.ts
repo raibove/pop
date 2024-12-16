@@ -14,16 +14,15 @@ export type WebviewToBlockMessage = { type: "INIT" } |
     isGameOver: boolean,
     attemptNumber: number,
   }
-} | 
-{
+} | {
   type: 'CREATE_NEW_GAME',
-}
-|
-{
+} | {
   type: 'PLAY_AGAIN',
   payload: {
     attemptNumber: number,
   }
+}|{
+  type: "GET_LEADERBOARD";
 }
 ;
 
@@ -45,7 +44,14 @@ export type BlocksToWebviewMessage = {
   payload: {
     newAttemptNumber: number;
   }
-};
+}|
+{
+  type: "LEADERBOARD_SCORE";
+  payload: {
+   leaderboard: {member: string, score: number}[]
+  }
+}
+;
 
 export type DevvitMessage = {
   type: "devvit-message";

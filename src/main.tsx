@@ -202,7 +202,37 @@ Devvit.addCustomPostType({
                   )
                   console.log('<< message sent')
                   break;
-                default:
+                  case 'GET_LEADERBOARD':
+                  try {
+                    const leaderboard = await ChallengeLeaderboard.getLeaderboardWithMaxScores(
+                       context['redis'],
+                       initialState.challenge!,
+                       'DESC',
+                       0,
+                       100
+                    );
+
+                    console.log('<< lb',leaderboard)
+
+                    sendMessageToWebview(context, {
+                      type: 'LEADERBOARD_SCORE',
+                      payload: {
+                        leaderboard
+                      },
+                    });
+                  } catch (error) {
+                    isServerCall(error);
+
+                    console.error('Error getting leaderboard:', error);
+                    // Sometimes the error is nasty and we don't want to show it
+                    if (error instanceof Error && !['Error: 2'].includes(error.message)) {
+                      context.ui.showToast(error.message);
+                      return;
+                    }
+                    context.ui.showToast(`I'm not sure what happened. Please try again.`);
+                  }
+                  break;
+                  default:
                   console.error('Unknown message type', data satisfies never);
                   break;
               }
