@@ -26,7 +26,6 @@ interface PostInfo {
     avatar: string | null;
   } | null;
   challenge?: number;
-  // attemptNumber: number | null;
 }
 
 // Add a post type definition
@@ -40,7 +39,6 @@ Devvit.addCustomPostType({
         avatar: string | null;
       } | null;
       challenge?: number;
-      // attemptNumber: number | null;
     }>(async (): Promise<PostInfo> => {
       const [user, challenge] = await Promise.all([
         context.reddit.getCurrentUser(),
@@ -49,31 +47,14 @@ Devvit.addCustomPostType({
           postId: context.postId!,
         }),
       ]);
-      let attemptNumber: number | null = null;
 
       if (!user) {
         return {
           user: null,
-          challenge,
-          // attemptNumber
+          challenge
         };
       }
 
-      // if (challenge) {
-      //   attemptNumber = await ChallengeToAttemptNumber.getLatestAttemptNumber(
-      //     context.redis,
-      //     challenge,
-      //     user.username,
-      //   );
-      //   if (!attemptNumber) {
-      //     attemptNumber = await ChallengeToAttemptNumber.updateLatestAttemptNumber(
-      //       context.redis,
-      //       challenge,
-      //       user.username,
-      //       1
-      //     );
-      //   }
-      // }
       return { user: { username: user.username, avatar: null }, challenge };
     });
 
@@ -202,17 +183,17 @@ Devvit.addCustomPostType({
                   )
                   console.log('<< message sent')
                   break;
-                  case 'GET_LEADERBOARD':
+                case 'GET_LEADERBOARD':
                   try {
                     const leaderboard = await ChallengeLeaderboard.getLeaderboardWithMaxScores(
-                       context['redis'],
-                       initialState.challenge!,
-                       'DESC',
-                       0,
-                       100
+                      context['redis'],
+                      initialState.challenge!,
+                      'DESC',
+                      0,
+                      100
                     );
 
-                    console.log('<< lb',leaderboard)
+                    console.log('<< lb', leaderboard)
 
                     sendMessageToWebview(context, {
                       type: 'LEADERBOARD_SCORE',
@@ -232,20 +213,30 @@ Devvit.addCustomPostType({
                     context.ui.showToast(`I'm not sure what happened. Please try again.`);
                   }
                   break;
-                  default:
+                default:
                   console.error('Unknown message type', data satisfies never);
                   break;
               }
             }}
           />
         ) : (
-          <button
-            onPress={() => {
-              setLaunched(true);
-            }}
-          >
-            Launch
-          </button>
+          <zstack width="100%" alignment="center middle" backgroundColor='#e4e5ea'>
+            <image url='gif_pop.gif'
+              imageWidth={ Math.min((context.dimensions?.height ?? 300) - GAME_BOARD_HEADER_HEIGHT, context.dimensions?.width ?? 300)}
+              imageHeight={ Math.min((context.dimensions?.height ?? 300) - GAME_BOARD_HEADER_HEIGHT, context.dimensions?.width ?? 300)}
+              height="100%"
+              width="100%"
+              // resizeMode="cover"
+            />
+            <button
+              onPress={() => {
+                setLaunched(true);
+              }}
+              appearance='media'
+            >
+              Play Game
+            </button>
+          </zstack>
         )}
       </vstack>
     );

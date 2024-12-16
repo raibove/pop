@@ -9,10 +9,9 @@ import { ChartColumnDecreasing, Music } from 'lucide-react'
 import { motion } from 'motion/react';
 import useSound from 'use-sound';
 import PopSound from './pop_sound.flac';
-import { i } from 'motion/react-client';
 
-export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, initialScore, attemptNumber }:
-  { postId: string, initialBoard: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number, attemptNumber: null | number }) => {
+export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, initialScore, attemptNumber, setIsGameOver }:
+  { postId: string, initialBoard: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number, attemptNumber: null | number, setIsGameOver: (gameOv: boolean)=> void }) => {
   const setPage = useSetPage();
   const [board, setBoard] = useState<Board>([]);
   const [score, setScore] = useState(0);
@@ -54,6 +53,7 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
       const isMoreMatchAvailable = checkIfMoreMatchAvailable(board, newHiddenTiles);
       if (!isMoreMatchAvailable) {
         setTimeout(() => {
+          setIsGameOver(true)
           setMoreMatchAvailable(isMoreMatchAvailable)
         }, 5000)
       }

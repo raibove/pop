@@ -8,7 +8,7 @@ import { Loader } from "../components/Loader";
 import { useSetPage } from "../hooks/usePage";
 
 // Leaderboard Component
-const Leaderboard = () => {
+const Leaderboard = ({isGameOver}: {isGameOver: boolean}) => {
     const leaderboardData = useDevvitListener('LEADERBOARD_SCORE');
     const players = leaderboardData?.leaderboard || [];
     const [currentPage, setCurrentPage] = useState(0);
@@ -36,7 +36,7 @@ const Leaderboard = () => {
             className="w-full mx-auto p-4 bg-gray-200 h-full relative"
         >
                <button 
-                onClick={()=>{setPage('userChoice')}}
+                onClick={()=>{isGameOver? setPage('userChoice'): setPage('home')}}
                 className="absolute top-4 left-4 p-2 rounded-full hover:bg-gray-300 transition-colors"
             >
                 <ArrowLeft className="w-6 h-6 text-gray-700" />
