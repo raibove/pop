@@ -1,21 +1,25 @@
 import { Page } from './shared';
-import { PokemonPage } from './pages/PokemonPage';
 import { HomePage } from './pages/HomePage';
 import { usePage, useSetPage } from './hooks/usePage';
 import { useEffect, useState } from 'react';
 import { sendToDevvit } from './utils';
 import { useDevvitListener } from './hooks/useDevvitListener';
 import { Board } from './types';
-import {createNewBoard} from '../src/utils/utils'
-import { EASY_BOARD_SIZE, HARD_BOARD_SIZE } from '../src/constants';
-import { set } from 'animejs';
+import LeaderboardPage from './pages/LeaderboardPage';
+import UserChoicePage from './pages/UserChoicePage';
 
 const getPage = (page: Page, { postId, board, tileWidth, initialHiddenTiles, initialScore }: { postId: string, board: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number }) => {
   switch (page) {
     case 'home':
       return <HomePage postId={postId} initialBoard={board} tileWidth={tileWidth} initialHiddenTiles={initialHiddenTiles} initialScore={initialScore}/>;
     case 'loading':
-      return <PokemonPage />;
+      return <div />;
+    case 'userChoice':
+      return <UserChoicePage />;
+    // case 'gameOver':
+    //   return <></>
+    case 'leaderboard':
+    return <LeaderboardPage />
     default:
       throw new Error(`Unknown page: ${page satisfies never}`);
   }
@@ -41,6 +45,10 @@ export const App = () => {
       const brd = JSON.parse(initData.board);
       setBoard(brd);
       setPostId(initData.postId);
+      if(initData.isGameOver){
+        setPage('userChoice')
+        return;
+      } 
       setPage('home')
       setInitialHiddenTiles(initData.hiddenTiles);
       setInitialScore(initData.score);

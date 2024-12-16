@@ -6,6 +6,7 @@ import GameBoard from '../components/GameBoard';
 import Score from '../components/Score';
 import { sendToDevvit } from '../utils';
 import { set } from 'animejs';
+import { GameOver } from '../components/GameOver';
 
 // const MAX_ALLOWED_TIME = 
 
@@ -26,7 +27,7 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
   }, [initialBoard]);
 
   const handleTileClick = (row: number, col: number) => {
-    setNumberOfClicks(prevNumberClick=> prevNumberClick+1);
+    setNumberOfClicks(prevNumberClick => prevNumberClick + 1);
     const matchResult = checkMatch(board, row, col, hiddenTiles);
     if (matchResult.matched) {
       const newHiddenTiles = new Set(hiddenTiles);
@@ -44,17 +45,17 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
           hiddenTiles: Array.from(newHiddenTiles).join(','),
           isGameOver: !isMoreMatchAvailable
         }
-    })
+      })
     }
   };
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center bg-gray-200">
       <div className=" flex flex-col items-center justify-center">
-      {!moreMatchAvailable && <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setPage('home')}>Restart</button>}
-      <Score score={score} />
-      <GameBoard board={board} onTileClick={handleTileClick} hiddenTiles={hiddenTiles} tileWidth={tileWidth}/>
-    </div>
+        {!moreMatchAvailable && <GameOver score={score} onCheckLeadboard={()=>setPage('leaderboard')}/>}
+        <Score score={score} />
+        <GameBoard board={board} onTileClick={handleTileClick} hiddenTiles={hiddenTiles} tileWidth={tileWidth} />
+      </div>
     </div>
   );
 };

@@ -1,6 +1,10 @@
 export type Page =
   | "home"
-  | "loading";
+  | "loading"
+  | "userChoice"
+  // | "gameOver"
+  | "leaderboard"
+  ;
 
 export type WebviewToBlockMessage = { type: "INIT" } |
 {type: "UPDATE_SCORE",
@@ -9,7 +13,11 @@ export type WebviewToBlockMessage = { type: "INIT" } |
     hiddenTiles: string,
     isGameOver: boolean 
   }
-};
+} | 
+{
+  type: 'CREATE_NEW_GAME',
+}
+;
 
 export type BlocksToWebviewMessage = {
   type: "INIT_RESPONSE";
@@ -21,6 +29,7 @@ export type BlocksToWebviewMessage = {
     appWidth?: number;
     hiddenTiles: string;
     score: number;
+    isGameOver: boolean;
   };
 };
 

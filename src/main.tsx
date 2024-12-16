@@ -73,8 +73,6 @@ Devvit.addCustomPostType({
           );
         }
       }
-      // const avatar = await context.reddit.getSnoovatarUrl(user.username);
-
       return { user: { username: user.username, avatar: null }, challenge, attemptNumber };
     });
 
@@ -112,7 +110,6 @@ Devvit.addCustomPostType({
                     attemptNumber: initialState.attemptNumber!,
                   });
 
-                  console.log('<< gameState', gameState);
                   sendMessageToWebview(context, {
                     type: 'INIT_RESPONSE',
                     payload: {
@@ -121,8 +118,9 @@ Devvit.addCustomPostType({
                       username: initialState.user!.username!,
                       avatar: initialState.user!.avatar ?? '',
                       appWidth: Math.min((context.dimensions?.height ?? 300) - 50, context.dimensions?.width ?? 300),
-                      hiddenTiles: gameState.initialHiddenTiles ?? '',
-                      score: gameState?.score ?? 0,
+                      hiddenTiles: gameState && gameState.initialHiddenTiles ? gameState.initialHiddenTiles: '',
+                      score:  gameState && gameState.score ? gameState.score : 0,
+                      isGameOver:  gameState && gameState.isGameOver ? gameState.isGameOver : false
                     },
                   });
                   break;
@@ -150,7 +148,24 @@ Devvit.addCustomPostType({
                     context.ui.showToast(`I'm not sure what happened. Please try again.`);
                   }
                   break;
-                default:
+                case 'CREATE_NEW_GAME':
+                  try{
+                    const { postUrl } = await Challenge.makeNewChallenge({ context });
+
+                    context.ui.navigateTo(postUrl);
+                  }catch(error){
+                    isServerCall(error);
+
+                    console.error('Error creating post:', error);
+                    // Sometimes the error is nasty and we don't want to show it
+                    if (error instanceof Error && !['Error: 2'].includes(error.message)) {
+                      context.ui.showToast(error.message);
+                      return;
+                    }
+                    context.ui.showToast(`I'm not sure what happened. Please try again.`);
+                  }
+                break;
+                  default:
                   console.error('Unknown message type', data satisfies never);
                   break;
               }
