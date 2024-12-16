@@ -12,13 +12,13 @@ export const GameOver: React.FC<GameOverProps> = ({ score, onCheckLeadboard }) =
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50"
+      className="fixed flex items-center justify-center z-50"
     >
       <motion.div
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         transition={{ type: "spring", duration: 0.6 }}
-        className="bg-gray-800/90 p-8 rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-purple-500/20"
+        className="bg-slate-300 p-8 rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-purple-500/20"
       >
         <motion.div
           initial={{ y: -20 }}
@@ -26,7 +26,7 @@ export const GameOver: React.FC<GameOverProps> = ({ score, onCheckLeadboard }) =
           className="flex flex-col items-center"
         >
           <Sparkles className="text-yellow-400 w-16 h-16 mb-4" />
-          <h2 className="text-3xl font-bold text-purple-300 mb-2">Game Over!</h2>
+          <h2 className="text-3xl font-bold text-slate-600 mb-2">Game Over!</h2>
           <p className="text-gray-400 text-center mb-6">
             Great effort! Here's how you did:
           </p>

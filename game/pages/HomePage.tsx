@@ -5,12 +5,11 @@ import { Board } from '../types';
 import GameBoard from '../components/GameBoard';
 import Score from '../components/Score';
 import { sendToDevvit } from '../utils';
-import { set } from 'animejs';
 import { GameOver } from '../components/GameOver';
-
 // const MAX_ALLOWED_TIME = 
 
-export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, initialScore }: { postId: string, initialBoard: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number }) => {
+export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, initialScore, attemptNumber }:
+  { postId: string, initialBoard: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number, attemptNumber: null | number }) => {
   const setPage = useSetPage();
   const [board, setBoard] = useState<Board>([]);
   const [score, setScore] = useState(0);
@@ -35,7 +34,11 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
         newHiddenTiles.add(`${r}-${c}`);
       });
       const isMoreMatchAvailable = checkIfMoreMatchAvailable(board, newHiddenTiles);
-      setMoreMatchAvailable(isMoreMatchAvailable)
+      if (!isMoreMatchAvailable) {
+        setTimeout(() => {
+          setMoreMatchAvailable(isMoreMatchAvailable)
+        }, 5000)
+      }
       setHiddenTiles(newHiddenTiles);
       setScore(score + matchResult.score!);
       sendToDevvit({
@@ -43,7 +46,8 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
         payload: {
           score: score + matchResult.score!,
           hiddenTiles: Array.from(newHiddenTiles).join(','),
-          isGameOver: !isMoreMatchAvailable
+          isGameOver: !isMoreMatchAvailable,
+          attemptNumber: attemptNumber ?? 0
         }
       })
     }
@@ -52,7 +56,7 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center bg-gray-200">
       <div className=" flex flex-col items-center justify-center">
-        {!moreMatchAvailable && <GameOver score={score} onCheckLeadboard={()=>setPage('leaderboard')}/>}
+        {!moreMatchAvailable && <GameOver score={score} onCheckLeadboard={() => setPage('leaderboard')} />}
         <Score score={score} />
         <GameBoard board={board} onTileClick={handleTileClick} hiddenTiles={hiddenTiles} tileWidth={tileWidth} />
       </div>

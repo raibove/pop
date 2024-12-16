@@ -8,18 +8,25 @@ import { Board } from './types';
 import LeaderboardPage from './pages/LeaderboardPage';
 import UserChoicePage from './pages/UserChoicePage';
 
-const getPage = (page: Page, { postId, board, tileWidth, initialHiddenTiles, initialScore }: { postId: string, board: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number }) => {
+const getPage = (page: Page, { postId, board, tileWidth, initialHiddenTiles, initialScore, attemptNumber }:
+  { postId: string, board: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number, attemptNumber: number | null }) => {
   switch (page) {
     case 'home':
-      return <HomePage postId={postId} initialBoard={board} tileWidth={tileWidth} initialHiddenTiles={initialHiddenTiles} initialScore={initialScore}/>;
+      return <HomePage postId={postId}
+        initialBoard={board}
+        tileWidth={tileWidth}
+        initialHiddenTiles={initialHiddenTiles}
+        initialScore={initialScore}
+        attemptNumber={attemptNumber}
+      />;
     case 'loading':
       return <div />;
     case 'userChoice':
-      return <UserChoicePage />;
+      return <UserChoicePage attemptNumber={attemptNumber!}/>;
     // case 'gameOver':
     //   return <></>
     case 'leaderboard':
-    return <LeaderboardPage />
+      return <LeaderboardPage />
     default:
       throw new Error(`Unknown page: ${page satisfies never}`);
   }
@@ -27,10 +34,11 @@ const getPage = (page: Page, { postId, board, tileWidth, initialHiddenTiles, ini
 
 export const App = () => {
   const [postId, setPostId] = useState('');
-  const [board,setBoard] = useState<Board>([]);
+  const [board, setBoard] = useState<Board>([]);
   const [tileWidth, setTileWidth] = useState(40);
   const [initialHiddenTiles, setInitialHiddenTiles] = useState('');
   const [initialScore, setInitialScore] = useState(0);
+  const [attemptNumber, setAttemptNumber] = useState<null | number>(null);
 
   const page = usePage();
   const setPage = useSetPage();
@@ -45,19 +53,21 @@ export const App = () => {
       const brd = JSON.parse(initData.board);
       setBoard(brd);
       setPostId(initData.postId);
-      if(initData.isGameOver){
+      setAttemptNumber(initData.attemptNumber);
+
+      if (initData.isGameOver) {
         setPage('userChoice')
         return;
-      } 
-      setPage('home')
+      }
       setInitialHiddenTiles(initData.hiddenTiles);
       setInitialScore(initData.score);
-      if(initData.appWidth){
+      if (initData.appWidth) {
         console.log(initData.appWidth);
-        setTileWidth(((initData.appWidth - 20)/brd.length) - 4);
+        setTileWidth(((initData.appWidth - 20) / brd.length) - 4);
       }
+      setPage('home')
     }
   }, [initData, setPostId]);
 
-  return <div className="h-screen overflow-hidden ">{getPage(page, { postId, board, tileWidth, initialHiddenTiles, initialScore })}</div>;
+  return <div className="h-screen overflow-hidden ">{getPage(page, { postId, board, tileWidth, initialHiddenTiles, initialScore, attemptNumber })}</div>;
 };

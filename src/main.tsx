@@ -25,7 +25,7 @@ interface PostInfo {
     avatar: string | null;
   } | null;
   challenge?: number;
-  attemptNumber: number | null;
+  // attemptNumber: number | null;
 }
 
 // Add a post type definition
@@ -39,7 +39,7 @@ Devvit.addCustomPostType({
         avatar: string | null;
       } | null;
       challenge?: number;
-      attemptNumber: number | null;
+      // attemptNumber: number | null;
     }>(async (): Promise<PostInfo> => {
       const [user, challenge] = await Promise.all([
         context.reddit.getCurrentUser(),
@@ -54,26 +54,26 @@ Devvit.addCustomPostType({
         return {
           user: null,
           challenge,
-          attemptNumber
+          // attemptNumber
         };
       }
 
-      if (challenge) {
-        attemptNumber = await ChallengeToAttemptNumber.getLatestAttemptNumber(
-          context.redis,
-          challenge,
-          user.username,
-        );
-        if (!attemptNumber) {
-          attemptNumber = await ChallengeToAttemptNumber.updateLatestAttemptNumber(
-            context.redis,
-            challenge,
-            user.username,
-            1
-          );
-        }
-      }
-      return { user: { username: user.username, avatar: null }, challenge, attemptNumber };
+      // if (challenge) {
+      //   attemptNumber = await ChallengeToAttemptNumber.getLatestAttemptNumber(
+      //     context.redis,
+      //     challenge,
+      //     user.username,
+      //   );
+      //   if (!attemptNumber) {
+      //     attemptNumber = await ChallengeToAttemptNumber.updateLatestAttemptNumber(
+      //       context.redis,
+      //       challenge,
+      //       user.username,
+      //       1
+      //     );
+      //   }
+      // }
+      return { user: { username: user.username, avatar: null }, challenge };
     });
 
     if (!initialState.user?.username) {
@@ -102,12 +102,29 @@ Devvit.addCustomPostType({
                     redis: context.redis,
                     challenge: initialState.challenge,
                   });
-                  console.log('<< attemptnumber', initialState.attemptNumber)
+
+                  let attemptNumber: number | null = null;
+                  if (challenge) {
+                    attemptNumber = await ChallengeToAttemptNumber.getLatestAttemptNumber(
+                      context.redis,
+                      initialState.challenge!,
+                      initialState.user!.username!,
+                    );
+                    if (!attemptNumber) {
+                      attemptNumber = await ChallengeToAttemptNumber.updateLatestAttemptNumber(
+                        context.redis,
+                        initialState.challenge!,
+                        initialState.user!.username!,
+                        1
+                      );
+                    }
+                  }
+                  console.log('<< attemptnumber', attemptNumber)
                   const gameState = await ChallengeLeaderboard.getGameState({
                     redis: context.redis,
                     challenge: initialState.challenge!,
                     username: initialState.user!.username!,
-                    attemptNumber: initialState.attemptNumber!,
+                    attemptNumber: attemptNumber!,
                   });
 
                   sendMessageToWebview(context, {
@@ -118,21 +135,21 @@ Devvit.addCustomPostType({
                       username: initialState.user!.username!,
                       avatar: initialState.user!.avatar ?? '',
                       appWidth: Math.min((context.dimensions?.height ?? 300) - 50, context.dimensions?.width ?? 300),
-                      hiddenTiles: gameState && gameState.initialHiddenTiles ? gameState.initialHiddenTiles: '',
-                      score:  gameState && gameState.score ? gameState.score : 0,
-                      isGameOver:  gameState && gameState.isGameOver ? gameState.isGameOver : false
+                      hiddenTiles: gameState && gameState.initialHiddenTiles ? gameState.initialHiddenTiles : '',
+                      score: gameState && gameState.score ? gameState.score : 0,
+                      isGameOver: gameState && gameState.isGameOver ? gameState.isGameOver : false,
+                      attemptNumber: attemptNumber!
                     },
                   });
                   break;
                 case 'UPDATE_SCORE':
                   try {
-                    console.log('hiddenTiles', data.payload.hiddenTiles)
                     await ChallengeLeaderboard.addEntry({
                       redis: context['redis'],
                       challenge: initialState.challenge!,
                       score: data.payload.score,
                       username: initialState.user!.username!,
-                      attemptNumber: initialState.attemptNumber!,
+                      attemptNumber: data.payload.attemptNumber,
                       hiddenTiles: data.payload.hiddenTiles,
                       isGameOver: data.payload.isGameOver
                     })
@@ -149,11 +166,11 @@ Devvit.addCustomPostType({
                   }
                   break;
                 case 'CREATE_NEW_GAME':
-                  try{
+                  try {
                     const { postUrl } = await Challenge.makeNewChallenge({ context });
 
                     context.ui.navigateTo(postUrl);
-                  }catch(error){
+                  } catch (error) {
                     isServerCall(error);
 
                     console.error('Error creating post:', error);
@@ -164,8 +181,27 @@ Devvit.addCustomPostType({
                     }
                     context.ui.showToast(`I'm not sure what happened. Please try again.`);
                   }
-                break;
-                  default:
+                  break;
+                case 'PLAY_AGAIN':
+                  // make new attempt number
+                  console.log('<< play again')
+                  const newAttemptNumber = await ChallengeToAttemptNumber.updateLatestAttemptNumber(
+                    context.redis,
+                    initialState.challenge!,
+                    initialState.user!.username!,
+                    data.payload.attemptNumber! + 1
+                  );
+                  console.log('newAttemptNumber', newAttemptNumber)
+                  sendMessageToWebview(
+                    context,
+                    {
+                      type: 'PLAY_AGAIN_CONFIGURED',
+                      payload: { newAttemptNumber }
+                    }
+                  )
+                  console.log('<< message sent')
+                  break;
+                default:
                   console.error('Unknown message type', data satisfies never);
                   break;
               }

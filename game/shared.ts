@@ -11,11 +11,19 @@ export type WebviewToBlockMessage = { type: "INIT" } |
   payload: {
     score: number,
     hiddenTiles: string,
-    isGameOver: boolean 
+    isGameOver: boolean,
+    attemptNumber: number,
   }
 } | 
 {
   type: 'CREATE_NEW_GAME',
+}
+|
+{
+  type: 'PLAY_AGAIN',
+  payload: {
+    attemptNumber: number,
+  }
 }
 ;
 
@@ -30,7 +38,13 @@ export type BlocksToWebviewMessage = {
     hiddenTiles: string;
     score: number;
     isGameOver: boolean;
+    attemptNumber: number;
   };
+} | {
+  type: 'PLAY_AGAIN_CONFIGURED';
+  payload: {
+    newAttemptNumber: number;
+  }
 };
 
 export type DevvitMessage = {
