@@ -37,9 +37,11 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
 
   useEffect(() => {
     setBoard(initialBoard);
-    const formattedHiddenTiles = new Set(initialHiddenTiles.split(', ').filter(tile => tile !== ''));
-    setHiddenTiles(formattedHiddenTiles);
-    setScore(initialScore);
+    const formattedHiddenTiles = new Set(initialHiddenTiles.split(',').filter(tile => tile !== ''));
+    if(formattedHiddenTiles.size !== 0) {
+      setHiddenTiles(formattedHiddenTiles);
+      setScore(initialScore);
+    }
     setIsHelpModalOpen(true)
   }, [initialBoard]);
 

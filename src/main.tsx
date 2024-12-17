@@ -101,7 +101,6 @@ Devvit.addCustomPostType({
                       );
                     }
                   }
-                  console.log('<< attemptnumber', attemptNumber)
                   const gameState = await ChallengeLeaderboard.getGameState({
                     redis: context.redis,
                     challenge: initialState.challenge!,
@@ -117,7 +116,7 @@ Devvit.addCustomPostType({
                       username: initialState.user!.username!,
                       avatar: initialState.user!.avatar ?? '',
                       appWidth: Math.min((context.dimensions?.height ?? 300) - GAME_BOARD_HEADER_HEIGHT, context.dimensions?.width ?? 300),
-                      hiddenTiles: gameState && gameState.initialHiddenTiles ? gameState.initialHiddenTiles : '',
+                      hiddenTiles: gameState && gameState.hiddenTiles ? gameState.hiddenTiles : '',
                       score: gameState && gameState.score ? gameState.score : 0,
                       isGameOver: gameState && gameState.isGameOver ? gameState.isGameOver : false,
                       attemptNumber: attemptNumber!
@@ -166,14 +165,12 @@ Devvit.addCustomPostType({
                   break;
                 case 'PLAY_AGAIN':
                   // make new attempt number
-                  console.log('<< play again')
                   const newAttemptNumber = await ChallengeToAttemptNumber.updateLatestAttemptNumber(
                     context.redis,
                     initialState.challenge!,
                     initialState.user!.username!,
                     data.payload.attemptNumber! + 1
                   );
-                  console.log('newAttemptNumber', newAttemptNumber)
                   sendMessageToWebview(
                     context,
                     {
@@ -181,7 +178,6 @@ Devvit.addCustomPostType({
                       payload: { newAttemptNumber }
                     }
                   )
-                  console.log('<< message sent')
                   break;
                 case 'GET_LEADERBOARD':
                   try {
@@ -192,8 +188,6 @@ Devvit.addCustomPostType({
                       0,
                       100
                     );
-
-                    console.log('<< lb', leaderboard)
 
                     sendMessageToWebview(context, {
                       type: 'LEADERBOARD_SCORE',

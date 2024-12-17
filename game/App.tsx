@@ -66,7 +66,6 @@ export const App = () => {
       setInitialHiddenTiles(initData.hiddenTiles);
       setInitialScore(initData.score);
       if (initData.appWidth) {
-        console.log(initData.appWidth);
         setTileWidth(((initData.appWidth - 20) / brd.length) - 4);
       }
       setPage('home')

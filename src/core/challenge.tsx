@@ -3,7 +3,7 @@ import { createNewBoard, stringifyValues } from '../utils/utils.js';
 import { Preview } from '../components/Preview.js';
 import { ChallengeToPost } from './challengeToPost.js';
 import { ChallengeInfo } from '../../game/shared.js';
-import { HARD_BOARD_SIZE } from '../constants.js';
+import { EASY_BOARD_SIZE, HARD_BOARD_SIZE } from '../constants.js';
 
 interface ChallengeConfig {
   redis: RedisType,
@@ -58,7 +58,7 @@ export const makeNewChallenge = async ({ context, postId }: { context: Devvit.Co
     context.reddit.getCurrentSubreddit(),
   ]);
 
-  const newBoard = createNewBoard(HARD_BOARD_SIZE);
+  const newBoard = createNewBoard(EASY_BOARD_SIZE);
   const newChallengeNumber = currentChallengeNumber + 1;
 
   let post: Post | undefined;
