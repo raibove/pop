@@ -8,17 +8,16 @@ import { Board } from './types';
 import LeaderboardPage from './pages/LeaderboardPage';
 import UserChoicePage from './pages/UserChoicePage';
 
-const getPage = (page: Page, { postId, board, tileWidth, initialHiddenTiles, initialScore, attemptNumber, isGameOver, setIsGameOver }:
-  { postId: string, board: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number, attemptNumber: number | null, isGameOver: boolean, setIsGameOver: (gameOv: boolean)=>void }) => {
+const getPage = (page: Page, { board, tileWidth, initialHiddenTiles, initialScore, attemptNumber }:
+  { board: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number, attemptNumber: number | null }) => {
   switch (page) {
     case 'home':
-      return <HomePage postId={postId}
+      return <HomePage
         initialBoard={board}
         tileWidth={tileWidth}
         initialHiddenTiles={initialHiddenTiles}
         initialScore={initialScore}
         attemptNumber={attemptNumber}
-        setIsGameOver={setIsGameOver}
       />;
     case 'loading':
       return <div />;
@@ -27,7 +26,7 @@ const getPage = (page: Page, { postId, board, tileWidth, initialHiddenTiles, ini
     // case 'gameOver':
     //   return <></>
     case 'leaderboard':
-      return <LeaderboardPage isGameOver={isGameOver}/>
+      return <LeaderboardPage />
     default:
       throw new Error(`Unknown page: ${page satisfies never}`);
   }
@@ -40,13 +39,11 @@ export const App = () => {
   const [initialHiddenTiles, setInitialHiddenTiles] = useState('');
   const [initialScore, setInitialScore] = useState(0);
   const [attemptNumber, setAttemptNumber] = useState<null | number>(null);
-  const [isGameOver, setIsGameOver] = useState(false);
 
   const page = usePage();
   const setPage = useSetPage();
   const initData = useDevvitListener('INIT_RESPONSE');
   useEffect(() => {
-    // setBoard(createNewBoard(HARD_BOARD_SIZE));
     sendToDevvit({ type: 'INIT' });
   }, []);
 
@@ -59,10 +56,8 @@ export const App = () => {
 
       if (initData.isGameOver) {
         setPage('userChoice')
-        setIsGameOver(true);
         return;
       }
-      setIsGameOver(false)
       setInitialHiddenTiles(initData.hiddenTiles);
       setInitialScore(initData.score);
       if (initData.appWidth) {
@@ -72,5 +67,5 @@ export const App = () => {
     }
   }, [initData, setPostId]);
 
-  return <div className="h-screen overflow-hidden ">{getPage(page, { postId, board, tileWidth, initialHiddenTiles, initialScore, attemptNumber, isGameOver, setIsGameOver })}</div>;
+  return <div className="h-screen overflow-hidden ">{getPage(page, { board, tileWidth, initialHiddenTiles, initialScore, attemptNumber })}</div>;
 };

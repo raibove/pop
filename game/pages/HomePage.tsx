@@ -11,8 +11,8 @@ import useSound from 'use-sound';
 import PopSound from './pop_sound.flac';
 import { HelpModal } from '../components/HelpModal';
 
-export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, initialScore, attemptNumber, setIsGameOver }:
-  { postId: string, initialBoard: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number, attemptNumber: null | number, setIsGameOver: (gameOv: boolean) => void }) => {
+export const HomePage = ({ initialBoard, tileWidth, initialHiddenTiles, initialScore, attemptNumber }:
+  { initialBoard: Board, tileWidth: number, initialHiddenTiles: string, initialScore: number, attemptNumber: null | number }) => {
   const setPage = useSetPage();
   const [board, setBoard] = useState<Board>([]);
   const [score, setScore] = useState(0);
@@ -38,11 +38,12 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
   useEffect(() => {
     setBoard(initialBoard);
     const formattedHiddenTiles = new Set(initialHiddenTiles.split(',').filter(tile => tile !== ''));
-    if(formattedHiddenTiles.size !== 0) {
+    if (formattedHiddenTiles.size !== 0) {
       setHiddenTiles(formattedHiddenTiles);
       setScore(initialScore);
+    } else {
+      setIsHelpModalOpen(true)
     }
-    setIsHelpModalOpen(true)
   }, [initialBoard]);
 
   const handleTileClick = (row: number, col: number) => {
@@ -57,7 +58,6 @@ export const HomePage = ({ postId, initialBoard, tileWidth, initialHiddenTiles, 
       const isMoreMatchAvailable = checkIfMoreMatchAvailable(board, newHiddenTiles);
       if (!isMoreMatchAvailable) {
         setTimeout(() => {
-          setIsGameOver(true)
           setMoreMatchAvailable(isMoreMatchAvailable)
         }, 5000)
       }
