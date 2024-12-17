@@ -3,15 +3,19 @@
 
 Pop is a color-matching puzzle game built using Devvit and React. Players can click on blank blocks to match and collect colored blocks, earning points and creating chain reactions for higher scores.
 
+What makes Pop special is its emphasis on color, animations, and interactivity. I’ve designed it to be visually captivating, with bright, colorful blocks and smooth, satisfying animations. The "pop" effect when blocks match feels rewarding, making each click more exciting.
+
 ![How it works](assets/gif_pop.gif)
 
 ### How to Play
 
 - **Start the Game**: Navigate to the Pop game page within Reddit.
-- **Click on Blank Tiles**: Trigger the game logic by clicking on blank spaces in the grid.
+- **Click on Blank Blocks**: Trigger the game logic by clicking on blank spaces in the grid.
 - **Match Colors**: Collect matching blocks by finding the nearest horizontally or vertically adjacent block of the same color.
 - **Score Points**: Earn points for every match and boost your score with matching more blocks.
 - **Climb the Leaderboard**: Compete with others in the Reddit community to top the leaderboard.
+
+In this game, you need to think ahead—one wrong pop could block potential future moves. The more you plan, the higher your score. Challenge yourself to find the best combinations and make every pop count.
 
 You can visit this [link](https://www.reddit.com/r/CrosswordCorner/comments/1hfqs60/pop_7/) to play the game.
 
